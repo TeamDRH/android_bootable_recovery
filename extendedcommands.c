@@ -431,9 +431,6 @@ int confirm_selection(const char* title, const char* confirm)
 						"No",
 						"No",
 						NULL };
-                /*char* items[] = { "No",
-                                  "Yes",
-                                  NULL };*/
 		int chosen_item = get_menu_selection(confirm_headers, items, 0, 0);
 		return chosen_item == 7;
 	}
@@ -819,72 +816,6 @@ void show_nandroid_advanced_restore_menu(const char* path)
     }
 }
 
-void show_nandroid_advanced_backup_menu()
-{
-    static char* advancedheaders[] = {  "Choose a partition to backup",
-                                "",
-                                "Advanced backup only backs up",
-                                "one partition at a time.",
-                                NULL
-    };
-
-    char tmp[PATH_MAX];
-    //sprintf(tmp, "%s/clockworkmod/backup/", path);
-    //char* file = choose_file_menu(tmp, NULL, advancedheaders);
-    //if (file == NULL)
-    //    return;
-
-    static char* headers[] = {  "Nandroid Advanced Bbackup",
-                                "",
-                                NULL
-    };
-
-    static char* list[] = { "Backup boot",
-                            "Backup system",
-                            "Backup data",
-                            "Backup cache",
-                            "Backup sd-ext",
-                            "Backup wimax",
-                            NULL
-    };
-    
-    //if (0 != get_partition_device("wimax", tmp)) {
-    //    // disable wimax restore option
-    //    list[5] = NULL;
-    //}
-
-    static char* confirm_restore  = "Confirm backup?";
-
-    int chosen_item = get_menu_selection(headers, list, 0, 0);
-    switch (chosen_item)
-    {
-        case 0:
-            if (confirm_selection(confirm_restore, "Yes - Backup boot"))
-                //nandroid_restore(file, 1, 0, 0, 0, 0, 0);
-            break;
-        case 1:
-            if (confirm_selection(confirm_restore, "Yes - Backup system"))
-                //nandroid_restore(file, 0, 1, 0, 0, 0, 0);
-            break;
-        case 2:
-            if (confirm_selection(confirm_restore, "Yes - Backup data"))
-                //nandroid_restore(file, 0, 0, 1, 0, 0, 0);
-            break;
-        case 3:
-            if (confirm_selection(confirm_restore, "Yes - Backup cache"))
-                //nandroid_restore(file, 0, 0, 0, 1, 0, 0);
-            break;
-        case 4:
-            if (confirm_selection(confirm_restore, "Yes - Backup sd-ext"))
-                //nandroid_restore(file, 0, 0, 0, 0, 1, 0);
-            break;
-        case 5:
-            if (confirm_selection(confirm_restore, "Yes - Backup wimax"))
-                //nandroid_restore(file, 0, 0, 0, 0, 0, 1);
-            break;
-    }
-}
-
 void show_nandroid_menu()
 {
     static char* headers[] = {  "Nandroid",
@@ -902,7 +833,7 @@ void show_nandroid_menu()
     };
 
     if (volume_for_path("/emmc") == NULL || volume_for_path("/sdcard") == NULL && is_data_media())
-        list[4] = NULL;
+        list[3] = NULL;
 
     int chosen_item = get_menu_selection(headers, list, 0, 0);
     switch (chosen_item)
