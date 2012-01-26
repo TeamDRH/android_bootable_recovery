@@ -93,7 +93,7 @@ static const struct { gr_surface* surface; const char *name; } BITMAPS[] = {
     { &gBackgroundIcon[BACKGROUND_ICON_FIRMWARE_ERROR], "icon_firmware_error" },
     { &gProgressBarEmpty,               "progress_empty" },
     { &gProgressBarFill,                "progress_fill" },
-    { &gVirtualKeys,			"virtual_keys" },
+    { &gVirtualKeys,                    "virtual_keys" },
     { NULL,                             NULL },
 };
 
@@ -232,7 +232,7 @@ static void draw_virtualkeys_locked()
 #define RIGHT_ALIGN 2
 
 static void draw_text_line(int row, const char* t, int align) {
-    int col = 0;  
+    int col = 0;
     if (t[0] != '\0') {
         int length = strnlen(t, MENU_MAX_COLS) * CHAR_WIDTH;
         switch(align)
@@ -248,7 +248,7 @@ static void draw_text_line(int row, const char* t, int align) {
                 break;
         }
 
-    	gr_text(col, (row+1)*CHAR_HEIGHT-1, t);
+        gr_text(col, (row+1)*CHAR_HEIGHT-1, t);
     }
 }
 
@@ -265,7 +265,7 @@ static void draw_screen_locked(void)
     if (!ui_has_initialized) return;
     draw_background_locked(gCurrentIcon);
     draw_progress_locked();
-    
+
 
     if (show_text) {
         gr_color(0, 0, 0, 160);
@@ -279,16 +279,16 @@ static void draw_screen_locked(void)
             gr_color(MENU_TEXT_COLOR);
             int batt_level = 0;
             batt_level = get_batt_stats();
-            
-	    if(batt_level < 21) {
+
+            if(batt_level < 21) {
                 gr_color(255, 0, 0, 255);
             }
 
             char batt_text[40];
             sprintf(batt_text, "[%d%%]", batt_level);
             draw_text_line(0, batt_text, RIGHT_ALIGN);
-            
-	    gr_color(MENU_TEXT_COLOR);
+
+            gr_color(MENU_TEXT_COLOR);
 
             gr_fill(0, (menu_top + menu_sel - menu_show_start) * CHAR_HEIGHT,
                     gr_fb_width(), (menu_top + menu_sel - menu_show_start + 1)*CHAR_HEIGHT+1);
@@ -466,29 +466,35 @@ static int input_callback(int fd, short revents, void *data)
     } else {
         rel_sum = 0;
     }
+
     printf("ev.code: %i, ev.type: %i, ev.value: %i\n", ev.code, ev.type, ev.value);
-    if(ev.type == 3 && ev.code == 57)  {
+    if(ev.type == 3 && ev.code == 48  && ev.value != 0)  {
         if(in_touch == 0) {
             in_touch = 1; //starting to track touch...
             reset_gestures();
-        } else {
-            //finger lifted! lets run with this
+        }
+	} else if(ev.type == 3 && ev.code == 48 && ev.value == 0) {
+		    //finger lifted! lets run with this
             ev.type = EV_KEY; //touch panel support!!!
             int keywidth = gr_fb_width() / 4;
             if(touch_y > gr_fb_height() - 96 && touch_x > 0) {
-                //they lifted in the touch panel region                
+                //they lifted in the touch panel region
                 if(touch_x < keywidth) {
                     //back button
                     ev.code = KEY_BACK;
+                    reset_gestures();
                 } else if(touch_x < keywidth*2) {
                     //up button
                     ev.code = KEY_UP;
+                    reset_gestures();
                 } else if(touch_x < keywidth*3) {
                     //down button
                     ev.code = KEY_DOWN;
+                    reset_gestures();
                 } else {
                     //enter key
                     ev.code = KEY_ENTER;
+                    reset_gestures();
                 }
                 vibrate(VIBRATOR_TIME_MS);
             }
@@ -503,12 +509,11 @@ static int input_callback(int fd, short revents, void *data)
             ev.value = 1;
             in_touch = 0;
             reset_gestures();
-        }
     } else if(ev.type == 3 && ev.code == 53) {
         old_x = touch_x;
         touch_x = ev.value;
         if(old_x != 0) diff_x += touch_x - old_x;
-    
+
         if(touch_y < gr_fb_height() - 196) {
             if(diff_x > 100) {
                 printf("Gesture forward generated\n");
@@ -524,21 +529,21 @@ static int input_callback(int fd, short revents, void *data)
                 reset_gestures();
             }
         } else {
-	    input_buttons();
-	    //reset_gestures();
+            input_buttons();
+            //reset_gestures();
         }
     } else if(ev.type == 3 && ev.code == 54) {
         old_y = touch_y;
         touch_y = ev.value;
         if(old_y != 0) diff_y += touch_y - old_y;
-                
+
         if(touch_y < gr_fb_height() - 196) {
-            if(diff_y > 80) {
+            if(diff_y > 25) {
                 printf("Gesture Down generated\n");
                 ev.code = KEY_DOWN;
                 ev.type = EV_KEY;
                 reset_gestures();
-            } else if(diff_y < -80) {
+            } else if(diff_y < -25) {
                 printf("Gesture Up generated\n");
                 ev.code = KEY_UP;
                 ev.type = EV_KEY;
@@ -549,7 +554,7 @@ static int input_callback(int fd, short revents, void *data)
             //reset_gestures();
         }
     }
-    
+
     if (ev.type != EV_KEY || ev.code > KEY_MAX) {
         return 0;
 
@@ -819,7 +824,7 @@ int ui_start_menu(char** headers, char** items, int initial_selection) {
             strcpy(menu[i], " - +++++Go Back+++++");
             ++i;
         }
-        
+
         strcpy(menu[i], " ");
         ++i;
 
@@ -976,7 +981,7 @@ int input_buttons()
     int final_code = 0;
     int start_draw = 0;
     int end_draw = 0;
-    
+
     if(touch_x < 173) {
         //back button
         final_code = KEY_BACK;
@@ -998,7 +1003,7 @@ int input_buttons()
         start_draw = 550;
         end_draw = gr_fb_width();
     }
-    
+
     if(touch_y > gr_fb_width() - 96 && touch_x > 0) {
         pthread_mutex_lock(&gUpdateMutex);
         gr_color(0, 0, 0, 255);     // clear old touch points
@@ -1009,7 +1014,7 @@ int input_buttons()
         gr_flip();
         pthread_mutex_unlock(&gUpdateMutex);
     }
-    
+
     if (in_touch == 1) {
         return final_code;
     } else {
@@ -1028,7 +1033,7 @@ int get_batt_stats(void)
         fgets(value, 4, capacity);
         fclose(capacity);
         level = atoi(value);
-        
+
         if (level > 100)
             level = 100;
         if (level < 0)
