@@ -1057,13 +1057,13 @@ void show_advanced_menu()
                 if (swap_size == GO_BACK)
                     continue;
 
-                char emmcdevice[256];
+                char sddevice[256];
                 Volume *vol = volume_for_path("/emmc");
-                strcpy(emmcdevice, vol->device);
+                strcpy(sddevice, vol->device);
                 // we only want the mmcblk, not the partition
-                emmcdevice[strlen("/dev/block/mmcblkX")] = NULL;
+                sddevice[strlen("/dev/block/mmcblkX")] = NULL;
                 char cmd[PATH_MAX];
-                setenv("SDPATH", emmcdevice, 1);
+                setenv("SDPATH", sddevice, 1);
                 sprintf(cmd, "sdparted -es %s -ss %s -efs ext3 -s", ext_sizes[ext_size], swap_sizes[swap_size]);
                 ui_print("Partitioning Internal SD Card... please wait...\n");
                 if (0 == __system(cmd))
