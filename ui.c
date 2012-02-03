@@ -88,12 +88,12 @@ static int ui_log_stdout = 1;
 static const struct { gr_surface* surface; const char *name; } BITMAPS[] = {
     { &gBackgroundIcon[BACKGROUND_ICON_INSTALLING], "icon_installing" },
     { &gBackgroundIcon[BACKGROUND_ICON_ERROR],      "icon_error" },
-    { &gBackgroundIcon[BACKGROUND_ICON_CLOCKWORK],  "icon_clockwork" },
+    { &gBackgroundIcon[BACKGROUND_ICON_CLOCKWORK],  "icon_clockwork_drh" },
     { &gBackgroundIcon[BACKGROUND_ICON_FIRMWARE_INSTALLING], "icon_firmware_install" },
     { &gBackgroundIcon[BACKGROUND_ICON_FIRMWARE_ERROR], "icon_firmware_error" },
     { &gProgressBarEmpty,               "progress_empty" },
     { &gProgressBarFill,                "progress_fill" },
-    { &gVirtualKeys,                    "virtual_keys" },
+    { &gVirtualKeys,                    "virtual_keys_1024" },
     { NULL,                             NULL },
 };
 
