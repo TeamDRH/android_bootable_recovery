@@ -80,7 +80,7 @@ int install_zip(const char* packagefilepath)
     return 0;
 }
 
-char* INSTALL_MENU_ITEMS[] = {  "choose zip from sdcard",
+char* INSTALL_MENU_ITEMS[] = {  "choose zip from external sdcard",
                                 "choose zip from internal sdcard",
                                 "apply /sdcard/update.zip",
                                 "toggle signature verification",
@@ -914,11 +914,11 @@ void show_advanced_menu()
                             "Key Test",
                             "Show log",
 #ifndef BOARD_HAS_SMALL_RECOVERY
-                            "Partition MicroSD Card (I think you want the Internal)",
-                            "Fix Permissions",
+                            "Partition External SD Card",
 //#ifdef BOARD_HAS_SDCARD_INTERNAL
                             "Partition Internal SD Card",
 //#endif
+                            "Fix Permissions",
 #endif
                             NULL
     };
@@ -1015,23 +1015,14 @@ void show_advanced_menu()
                 char cmd[PATH_MAX];
                 setenv("SDPATH", sddevice, 1);
                 sprintf(cmd, "sdparted -es %s -ss %s -efs ext3 -s", ext_sizes[ext_size], swap_sizes[swap_size]);
-                ui_print("Partitioning MicroSD Card... please wait...\n");
+                ui_print("Partitioning External SD Card... please wait...\n");
                 if (0 == __system(cmd))
                     ui_print("Done!\n");
                 else
-                    ui_print("An error occured while partitioning your MicroSD Card. Please see /tmp/recovery.log for more details.\n");
+                    ui_print("An error occured while partitioning your External SD Card. Please see /tmp/recovery.log for more details.\n");
                 break;
             }
             case 7:
-            {
-                ensure_path_mounted("/system");
-                ensure_path_mounted("/data");
-                ui_print("Fixing permissions...\n");
-                __system("fix_permissions");
-                ui_print("Done!\n");
-                break;
-            }
-            case 8:
             {
                 static char* ext_sizes[] = { "128M",
                                              "256M",
@@ -1072,6 +1063,15 @@ void show_advanced_menu()
                     ui_print("Done!\n");
                 else
                     ui_print("An error occured while partitioning your Internal SD Card. Please see /tmp/recovery.log for more details.\n");
+                break;
+            }
+            case 8:
+            {
+                ensure_path_mounted("/system");
+                ensure_path_mounted("/data");
+                ui_print("Fixing permissions...\n");
+                __system("fix_permissions");
+                ui_print("Done!\n");
                 break;
             }
         }
