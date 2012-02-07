@@ -81,16 +81,16 @@ int install_zip(const char* packagefilepath)
 }
 
 char* INSTALL_MENU_ITEMS[] = {  "choose zip from sdcard",
+                                "choose zip from internal sdcard",
                                 "apply /sdcard/update.zip",
                                 "toggle signature verification",
                                 "toggle script asserts",
-                                "choose zip from internal sdcard",
                                 NULL };
 #define ITEM_CHOOSE_ZIP       0
-#define ITEM_APPLY_SDCARD     1
-#define ITEM_SIG_CHECK        2
-#define ITEM_ASSERTS          3
-#define ITEM_CHOOSE_ZIP_INT   4
+#define ITEM_CHOOSE_ZIP_INT   1
+#define ITEM_APPLY_SDCARD     2
+#define ITEM_SIG_CHECK        3
+#define ITEM_ASSERTS          4
 
 void show_install_update_menu()
 {
@@ -364,7 +364,7 @@ void show_nandroid_restore_menu(const char* path)
 void show_mount_usb_storage_menu()
 {
     int fd;
-    Volume *vol = volume_for_path("/sdcard");
+    Volume *vol = volume_for_path("/emmc");
     if ((fd = open(BOARD_UMS_LUNFILE, O_WRONLY)) < 0) {
         LOGE("Unable to open ums lunfile (%s)", strerror(errno));
         return -1;
@@ -606,7 +606,8 @@ int is_safe_to_format(char* name)
 {
     char str[255];
     char* partition;
-    property_get("ro.cwm.forbid_format", str, "/misc,/radio,/bootloader,/recovery,/efs");
+    //property_get("ro.cwm.forbid_format", str, "/misc,/radio,/bootloader,/recovery,/efs");
+    property_get("ro.cwm.forbid_format", str, "/radio,/bootloader,/recovery,/efs");
 
     partition = strtok(str, ", ");
     while (partition != NULL) {
@@ -825,12 +826,12 @@ void show_nandroid_menu()
                                 NULL
     };
 
-    static char* list[] = { "backup",
-                            "restore",
-                            "advanced restore",
-                            "backup to internal sdcard",
+    static char* list[] = { "backup to internal sdcard",
                             "restore from internal sdcard",
                             "advanced restore from internal sdcard",
+                            "backup to external sdcard",
+                            "restore from external sdcard",
+                            "advanced restore from external sdcard",
                             NULL
     };
 
@@ -849,20 +850,20 @@ void show_nandroid_menu()
                 {
                     struct timeval tp;
                     gettimeofday(&tp, NULL);
-                    sprintf(backup_path, "/sdcard/clockworkmod/backup/%d", tp.tv_sec);
+                    sprintf(backup_path, "/emmc/clockworkmod/backup/%d", tp.tv_sec);
                 }
                 else
                 {
-                    strftime(backup_path, sizeof(backup_path), "/sdcard/clockworkmod/backup/%F.%H.%M.%S", tmp);
+                    strftime(backup_path, sizeof(backup_path), "/emmc/clockworkmod/backup/%F.%H.%M.%S", tmp);
                 }
                 nandroid_backup(backup_path);
             }
             break;
         case 1:
-            show_nandroid_restore_menu("/sdcard");
+            show_nandroid_restore_menu("/emmc");
             break;
         case 2:
-            show_nandroid_advanced_restore_menu("/sdcard");
+            show_nandroid_advanced_restore_menu("/emmc");
             break;
         case 3:
             {
@@ -873,20 +874,20 @@ void show_nandroid_menu()
                 {
                     struct timeval tp;
                     gettimeofday(&tp, NULL);
-                    sprintf(backup_path, "/emmc/clockworkmod/backup/%d", tp.tv_sec);
+                    sprintf(backup_path, "/sdcard/clockworkmod/backup/%d", tp.tv_sec);
                 }
                 else
                 {
-                    strftime(backup_path, sizeof(backup_path), "/emmc/clockworkmod/backup/%F.%H.%M.%S", tmp);
+                    strftime(backup_path, sizeof(backup_path), "/sdcard/clockworkmod/backup/%F.%H.%M.%S", tmp);
                 }
                 nandroid_backup(backup_path);
             }
             break;
         case 4:
-            show_nandroid_restore_menu("/emmc");
+            show_nandroid_restore_menu("/sdcard");
             break;
         case 5:
-            show_nandroid_advanced_restore_menu("/emmc");
+            show_nandroid_advanced_restore_menu("/sdcard");
             break;
     }
 }
@@ -913,7 +914,7 @@ void show_advanced_menu()
                             "Key Test",
                             "Show log",
 #ifndef BOARD_HAS_SMALL_RECOVERY
-                            "Partition SD Card",
+                            "Partition MicroSD Card (I think you want the Internal)",
                             "Fix Permissions",
 //#ifdef BOARD_HAS_SDCARD_INTERNAL
                             "Partition Internal SD Card",
@@ -1014,11 +1015,11 @@ void show_advanced_menu()
                 char cmd[PATH_MAX];
                 setenv("SDPATH", sddevice, 1);
                 sprintf(cmd, "sdparted -es %s -ss %s -efs ext3 -s", ext_sizes[ext_size], swap_sizes[swap_size]);
-                ui_print("Partitioning SD Card... please wait...\n");
+                ui_print("Partitioning MicroSD Card... please wait...\n");
                 if (0 == __system(cmd))
                     ui_print("Done!\n");
                 else
-                    ui_print("An error occured while partitioning your SD Card. Please see /tmp/recovery.log for more details.\n");
+                    ui_print("An error occured while partitioning your MicroSD Card. Please see /tmp/recovery.log for more details.\n");
                 break;
             }
             case 7:
@@ -1065,7 +1066,7 @@ void show_advanced_menu()
                 sddevice[strlen("/dev/block/mmcblkX")] = NULL;
                 char cmd[PATH_MAX];
                 setenv("SDPATH", sddevice, 1);
-                sprintf(cmd, "emmcparted -es %s -ss %s -efs ext3 -s", ext_sizes[ext_size], swap_sizes[swap_size]);
+                sprintf(cmd, "sdparted -es %s -ss %s -efs ext3 -s", ext_sizes[ext_size], swap_sizes[swap_size]);
                 ui_print("Partitioning Internal SD Card... please wait...\n");
                 if (0 == __system(cmd))
                     ui_print("Done!\n");
