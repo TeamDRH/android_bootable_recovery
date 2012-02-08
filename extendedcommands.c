@@ -48,6 +48,7 @@
 int signature_check_enabled = 1;
 int script_assert_enabled = 1;
 static const char *SDCARD_UPDATE_FILE = "/sdcard/update.zip";
+static const char *EMMC_UPDATE_FILE = "/emmc/update.zip";
 
 void
 toggle_signature_check()
@@ -82,20 +83,23 @@ int install_zip(const char* packagefilepath)
 
 char* INSTALL_MENU_ITEMS[] = {  "choose zip from external sdcard",
                                 "choose zip from internal sdcard",
-                                "apply /sdcard/update.zip",
+                                "apply /sdcard/update.zip (external)",
+                                "apply /emmc/update.zip (internal)",
                                 "toggle signature verification",
                                 "toggle script asserts",
                                 NULL };
 #define ITEM_CHOOSE_ZIP       0
 #define ITEM_CHOOSE_ZIP_INT   1
 #define ITEM_APPLY_SDCARD     2
-#define ITEM_SIG_CHECK        3
-#define ITEM_ASSERTS          4
+#define ITEM_APPLY_EMMC       3
+#define ITEM_SIG_CHECK        4
+#define ITEM_ASSERTS          5
 
 void show_install_update_menu()
 {
     static char* headers[] = {  "Apply update from .zip file on SD card",
                                 "",
+
                                 NULL
     };
     
@@ -117,6 +121,12 @@ void show_install_update_menu()
             {
                 if (confirm_selection("Confirm install?", "Yes - Install /sdcard/update.zip"))
                     install_zip(SDCARD_UPDATE_FILE);
+                break;
+            }
+            case ITEM_APPLY_EMMC:
+            {
+                if (confirm_selection("Confirm install?", "Yes - Install /emmc/update.zip"))
+                    install_zip(EMMC_UPDATE_FILE);
                 break;
             }
             case ITEM_CHOOSE_ZIP:
@@ -376,6 +386,7 @@ void show_mount_usb_storage_menu()
         close(fd);
         return -1;
     }
+
     static char* headers[] = {  "USB Mass Storage device",
                                 "Leaving this menu unmount",
                                 "your SD card from your PC.",
@@ -403,6 +414,7 @@ void show_mount_usb_storage_menu()
         close(fd);
         return -1;
     }
+
 }
 
 int confirm_selection(const char* title, const char* confirm)
