@@ -1046,9 +1046,13 @@ void show_advanced_menu()
                 if (ext_size == GO_BACK)
                     continue;
 
-                int swap_size = 0;
+                int swap_size = get_menu_selection(swap_headers, swap_sizes, 0, 0);
                 if (swap_size == GO_BACK)
                     continue;
+		//Added swap option back for comfort of rookies
+                //int swap_size = 0;
+                //if (swap_size == GO_BACK)
+                //    continue;
 
                 char sddevice[256];
                 Volume *vol = volume_for_path("/emmc");
