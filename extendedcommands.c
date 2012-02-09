@@ -907,8 +907,7 @@ void show_advanced_menu()
                                 NULL
     };
 
-    static char* list[] = { "Reboot Recovery",
-                            "Wipe Dalvik Cache",
+    static char* list[] = { "Wipe Dalvik Cache",
                             "Wipe Battery Stats",
                             "Report Error",
                             "Key Test",
@@ -932,11 +931,6 @@ void show_advanced_menu()
         {
             case 0:
             {
-                android_reboot(ANDROID_RB_RESTART2, 0, "recovery");
-                break;
-            }
-            case 1:
-            {
                 if (0 != ensure_path_mounted("/data"))
                     break;
                 ensure_path_mounted("/sd-ext");
@@ -950,16 +944,16 @@ void show_advanced_menu()
                 ensure_path_unmounted("/data");
                 break;
             }
-            case 2:
+            case 1:
             {
                 if (confirm_selection( "Confirm wipe?", "Yes - Wipe Battery Stats"))
                     wipe_battery_stats();
                 break;
             }
-            case 3:
+            case 2:
                 handle_failure(1);
                 break;
-            case 4:
+            case 3:
             {
                 ui_print("Outputting key codes.\n");
                 ui_print("Go back to end debugging.\n");
@@ -974,12 +968,12 @@ void show_advanced_menu()
                 while (action != GO_BACK);
                 break;
             }
-            case 5:
+            case 4:
             {
                 ui_printlogtail(12);
                 break;
             }
-            case 6:
+            case 5:
             {
                 static char* ext_sizes[] = { "128M",
                                              "256M",
@@ -1022,7 +1016,7 @@ void show_advanced_menu()
                     ui_print("An error occured while partitioning your External SD Card. Please see /tmp/recovery.log for more details.\n");
                 break;
             }
-            case 7:
+            case 6:
             {
                 static char* ext_sizes[] = { "128M",
                                              "256M",
@@ -1069,7 +1063,7 @@ void show_advanced_menu()
                     ui_print("An error occured while partitioning your Internal SD Card. Please see /tmp/recovery.log for more details.\n");
                 break;
             }
-            case 8:
+            case 7:
             {
                 ensure_path_mounted("/system");
                 ensure_path_mounted("/data");
