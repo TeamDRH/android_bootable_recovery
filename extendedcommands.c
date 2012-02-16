@@ -374,6 +374,7 @@ void show_mount_usb_storage_menu()
 {
     int fd;
     Volume *vol = volume_for_path("/emmc");
+	ui_print("fd: %s\n", vol->device);
     if ((fd = open(BOARD_UMS_LUNFILE, O_WRONLY)) < 0) {
         LOGE("Unable to open ums lunfile (%s)", strerror(errno));
         return -1;
