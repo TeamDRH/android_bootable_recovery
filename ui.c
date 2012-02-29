@@ -49,6 +49,7 @@ static int gShowBackButton = 0;
 
 #define MIN_LOG_ROWS 3
 
+
 #define CHAR_WIDTH BOARD_RECOVERY_CHAR_WIDTH
 #define CHAR_HEIGHT BOARD_RECOVERY_CHAR_HEIGHT
 

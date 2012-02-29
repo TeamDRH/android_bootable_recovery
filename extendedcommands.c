@@ -373,8 +373,7 @@ void show_nandroid_restore_menu(const char* path)
 void show_mount_usb_storage_menu()
 {
     int fd;
-    Volume *vol = volume_for_path("/emmc");
-	ui_print("fd: %s\n", vol->device);
+    Volume *vol = volume_for_path("/sdcard");
     if ((fd = open(BOARD_UMS_LUNFILE, O_WRONLY)) < 0) {
         LOGE("Unable to open ums lunfile (%s)", strerror(errno));
         return -1;
@@ -922,13 +921,9 @@ void show_advanced_menu()
                             "Report Error",
                             "Key Test",
                             "Show log",
-#ifndef BOARD_HAS_SMALL_RECOVERY
                             "Partition External SD Card",
-//#ifdef BOARD_HAS_SDCARD_INTERNAL
                             "Partition Internal SD Card",
-//#endif
                             "Fix Permissions",
-#endif
                             NULL
     };
 
