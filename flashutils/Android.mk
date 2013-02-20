@@ -1,7 +1,6 @@
 LOCAL_PATH := $(call my-dir)
 
 ifneq ($(TARGET_SIMULATOR),true)
-ifeq ($(TARGET_ARCH),arm)
 
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := flashutils.c
@@ -24,7 +23,7 @@ include $(CLEAR_VARS)
 LOCAL_SRC_FILES := flash_image.c
 LOCAL_MODULE := flash_image
 LOCAL_MODULE_TAGS := optional
-LOCAL_STATIC_LIBRARIES := libflashutils libmtdutils libmmcutils libbmlutils
+LOCAL_STATIC_LIBRARIES := libflashutils libmtdutils libmmcutils libbmlutils libcrecovery
 LOCAL_SHARED_LIBRARIES := libcutils libc
 include $(BUILD_EXECUTABLE)
 
@@ -32,7 +31,7 @@ include $(CLEAR_VARS)
 LOCAL_SRC_FILES := dump_image.c
 LOCAL_MODULE := dump_image
 LOCAL_MODULE_TAGS := optional
-LOCAL_STATIC_LIBRARIES := libflashutils libmtdutils libmmcutils libbmlutils
+LOCAL_STATIC_LIBRARIES := libflashutils libmtdutils libmmcutils libbmlutils libcrecovery
 LOCAL_SHARED_LIBRARIES := libcutils libc
 include $(BUILD_EXECUTABLE)
 
@@ -40,7 +39,7 @@ include $(CLEAR_VARS)
 LOCAL_SRC_FILES := erase_image.c
 LOCAL_MODULE := erase_image
 LOCAL_MODULE_TAGS := optional
-LOCAL_STATIC_LIBRARIES := libflashutils libmtdutils libmmcutils libbmlutils
+LOCAL_STATIC_LIBRARIES := libflashutils libmtdutils libmmcutils libbmlutils libcrecovery
 LOCAL_SHARED_LIBRARIES := libcutils libc
 include $(BUILD_EXECUTABLE)
 
@@ -103,5 +102,4 @@ LOCAL_STATIC_LIBRARIES := libflashutils libmtdutils libmmcutils libbmlutils libc
 LOCAL_FORCE_STATIC_EXECUTABLE := true
 include $(BUILD_EXECUTABLE)
 
-endif	# TARGET_ARCH == arm
 endif	# !TARGET_SIMULATOR
