@@ -1284,7 +1284,8 @@ void show_advanced_menu()
                                 NULL
     };
 
-    static char* list[] = { "wipe dalvik cache",
+    static char* list[] = { "power off",
+                            "wipe dalvik cache",
                             "report error",
                             "key test",
                             "show log",
@@ -1309,6 +1310,9 @@ void show_advanced_menu()
         switch (chosen_item)
         {
             case 0:
+                android_reboot(ANDROID_RB_POWEROFF, 0, 0);
+		    break;
+            case 1:
                 if (0 != ensure_path_mounted("/data"))
                     break;
                 ensure_path_mounted("/sd-ext");
@@ -1321,10 +1325,10 @@ void show_advanced_menu()
                 }
                 ensure_path_unmounted("/data");
                 break;
-            case 1:
+            case 2:
                 handle_failure(1);
                 break;
-            case 2:
+            case 3:
             {
                 ui_print("Outputting key codes.\n");
                 ui_print("Go back to end debugging.\n");
@@ -1339,25 +1343,26 @@ void show_advanced_menu()
                 while (action != GO_BACK);
                 break;
             }
-            case 3:
+            case 4:
                 ui_printlogtail(12);
                 break;
-            case 4:
+            case 5:
                 ensure_path_mounted("/system");
                 ensure_path_mounted("/data");
                 ui_print("Fixing permissions...\n");
                 __system("fix_permissions");
                 ui_print("Done!\n");
                 break;
-            case 5:
+            case 6:
                 partition_sdcard("/sdcard");
                 break;
-            case 6:
+            case 7:
                 partition_sdcard("/emmc");
                 break;
         }
     }
 }
+
 
 void write_fstab_root(char *path, FILE *file)
 {

@@ -740,7 +740,7 @@ prompt_and_wait() {
                 break;
 
             case ITEM_POWEROFF:
-                android_reboot(ANDROID_RB_POWEROFF, 0, 0);
+                poweroff = 1;
                 return;
         }
     }
